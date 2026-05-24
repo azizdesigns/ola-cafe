@@ -1026,6 +1026,98 @@
     body.locked {
       overflow: hidden;
     }
+
+    /* ─── MOBILE OPTIMIZATIONS ───────────────────────── */
+    @media (max-width: 768px) {
+      nav {
+        padding: 16px 24px;
+      }
+      nav.scrolled {
+        padding: 12px 24px;
+      }
+      .nav-links {
+        gap: 20px;
+      }
+      .nav-links a {
+        font-size: 12px;
+        letter-spacing: 0.1em;
+      }
+      .hero {
+        padding: 120px 24px 80px;
+      }
+      .brand-mark {
+        margin-bottom: 32px;
+      }
+      .hero-sub {
+        font-size: 20px;
+      }
+      .section {
+        padding: 64px 24px;
+      }
+      .concept-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .swatch-lg {
+        height: 240px;
+      }
+      .offerings-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .offering-card {
+        padding: 40px 24px;
+      }
+      .warm-stripe {
+        grid-template-columns: 1fr;
+      }
+      .stripe-visual {
+        min-height: 280px;
+      }
+      .stripe-content {
+        padding: 48px 24px;
+      }
+      .contact-section {
+        padding: 80px 24px;
+      }
+      .contact-heading {
+        margin-bottom: 24px;
+      }
+      footer {
+        padding: 24px 24px;
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+      }
+      .password-card {
+        max-width: 90%;
+        padding: 36px 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-logo {
+        font-size: 24px;
+      }
+      .nav-links {
+        gap: 12px;
+      }
+      .nav-links a {
+        font-size: 11px;
+      }
+      .hero-sub {
+        font-size: 18px;
+      }
+      .section-title {
+        font-size: clamp(36px, 10vw, 48px);
+      }
+      .contact-heading {
+        font-size: clamp(40px, 12vw, 64px);
+      }
+      .password-logo {
+        font-size: 48px;
+      }
+    }
   </style>
 </head>
 <body class="locked">
