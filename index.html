@@ -918,9 +918,130 @@
                   transform 1s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .reveal.on { opacity: 1; transform: translateY(0); }
+
+    /* ─── PASSWORD SHIELD ────────────────────────────── */
+    .password-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .password-overlay::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 3px,
+          rgba(155, 106, 58, 0.04) 3px,
+          rgba(155, 106, 58, 0.04) 4px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 3px,
+          rgba(155, 106, 58, 0.03) 3px,
+          rgba(155, 106, 58, 0.03) 4px
+        );
+      pointer-events: none;
+    }
+    .password-card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 400px;
+      padding: 48px 32px;
+      text-align: center;
+      background: var(--cream-warm);
+      border: 1px solid var(--tan);
+      box-shadow: 0 20px 40px rgba(74, 44, 18, 0.05);
+    }
+    .password-logo {
+      font-family: 'Cormorant', serif;
+      font-weight: 700;
+      font-style: italic;
+      font-size: 64px;
+      color: var(--brown);
+      display: block;
+      margin-bottom: 16px;
+      line-height: 1;
+    }
+    .password-prompt {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      color: var(--muted);
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+    #password-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    #password-input {
+      padding: 14px 20px;
+      border: 1px solid var(--tan);
+      background: var(--cream);
+      color: var(--text);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      text-align: center;
+      letter-spacing: 0.1em;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    #password-input:focus {
+      border-color: var(--brown-lt);
+    }
+    .password-btn {
+      padding: 14px;
+      background: var(--brown);
+      border: 1px solid var(--brown);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 16px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+    }
+    .password-btn:hover {
+      background: transparent;
+      color: var(--brown);
+    }
+    .password-error-msg {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 14px;
+      color: var(--terra);
+      margin-top: 16px;
+      min-height: 20px;
+    }
+    body.locked {
+      overflow: hidden;
+    }
   </style>
 </head>
-<body>
+<body class="locked">
+
+  <!-- PASSWORD SHIELD -->
+  <div id="password-shield" class="password-overlay">
+    <div class="password-card">
+      <span class="password-logo">olà</span>
+      <p class="password-prompt">This demo is password protected. Enter the password below to view.</p>
+      <form id="password-form">
+        <input type="password" id="password-input" placeholder="Password" required autofocus>
+        <button type="submit" class="password-btn"><span>Enter</span></button>
+      </form>
+      <p id="password-error" class="password-error-msg"></p>
+    </div>
+  </div>
 
   <!-- NAV -->
   <nav id="nav">
@@ -1084,6 +1205,43 @@
     }, { threshold: 0.07, rootMargin: '0px 0px -24px 0px' });
 
     document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+    // PASSWORD SHIELD LOGIC
+    (function() {
+      const shield = document.getElementById('password-shield');
+      const form = document.getElementById('password-form');
+      const input = document.getElementById('password-input');
+      const errorMsg = document.getElementById('password-error');
+
+      // Check session storage so they don't have to log in repeatedly in the same session
+      if (sessionStorage.getItem('ola_demo_authorized') === 'true') {
+        if (shield) shield.style.display = 'none';
+        document.body.classList.remove('locked');
+      } else {
+        document.body.classList.add('locked');
+      }
+
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          if (input.value === 'demo') {
+            sessionStorage.setItem('ola_demo_authorized', 'true');
+            if (shield) {
+              shield.style.opacity = '0';
+              shield.style.visibility = 'hidden';
+            }
+            document.body.classList.remove('locked');
+            setTimeout(() => {
+              if (shield) shield.style.display = 'none';
+            }, 500);
+          } else {
+            errorMsg.textContent = 'Incorrect password. Please try again.';
+            input.value = '';
+            input.focus();
+          }
+        });
+      }
+    })();
   </script>
 </body>
 </html>
